@@ -1,8 +1,13 @@
-import React from 'react'
-import {Rectangle, Circle, Ellipse, Line, Polyline, CornerBox, Triangle} from 'react-shapes';
-
-// import { Component } from 'components'
-import 'styling/semantic.less'
+import React from 'react';
+import {
+  Rectangle,
+  Circle,
+  Ellipse,
+  Line,
+  Polyline,
+  CornerBox,
+  Triangle
+} from 'react-shapes';
 
 const App = () => (
   <div
