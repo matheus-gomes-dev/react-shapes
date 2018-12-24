@@ -1,4 +1,4 @@
-import { define4thPoints, defineAngularCoefficient } from './parallelogramDraw';
+import { define4thPoints, defineAngularCoefficient, definePolylineExpression } from './parallelogramDraw';
 
 const P1 = { coordinateX: 0, coordinateY: 10 };
 const P2 = { coordinateX: 0, coordinateY: 0 };
@@ -21,11 +21,14 @@ describe('Parallelogram Draw Tests', () => {
     test('Function defineAngularCoefficient must exist', () => {
       expect(defineAngularCoefficient).toBeDefined();
     });
+    test('Function definePolylineExpression must exist', () => {
+      expect(definePolylineExpression).toBeDefined();
+    });
   });
   describe(`
-    *** Defining the position of the 4th point of the parallelogram ***
+    *** Defining parallelogram ***
   `, () => {
-    describe('Calculating the angular coefficient of a line that passes through points P1 and P2', () => {
+    describe('Calculating the angular coefficient of a line that passes through points P1 and P2:', () => {
       test(`
         When:
           -P1 is positioned at (0, 0)
@@ -51,28 +54,32 @@ describe('Parallelogram Draw Tests', () => {
         expect(defineAngularCoefficient(P7, P1)).toBe(100000);
       });
     });
-    describe(`If the position of 3 points (P1, P2, P3) of a parallelogram is known, we can define:
+    describe(`
     
-    -The equation of the line that passes through P1 and P2, that will be named r12.
-    -The equation of the line that passes through P1 and P3, that will be named r13.
-    -The equation of the line that passes through P2 and P3, that will be named r23.
-    
-    Now we can also define:
-    
-    -The equation of the line that is parallel to r23 and passes through P1, that will be named r1;
-    -The equation of the line that is parallel to r13 and passes through P2, that will be named r2;
-    -The equation of the line that is parallel to r12 and passes through P3. that will be named r3;
-    
-    By definition, in Euclidean geometry, a parallelogram is a simple (non-self-intersecting) 
-    quadrilateral with two pairs of parallel sides. Therefore, given P1, P2 and P3, 
-    we have 3 possible parallelograms:
+      Defining the position of the 4th point of the parallelogram:
+      
+      If the position of 3 points (P1, P2, P3) of a parallelogram is known, we can define:
+      
+      -The equation of the line that passes through P1 and P2, that will be named r12.
+      -The equation of the line that passes through P1 and P3, that will be named r13.
+      -The equation of the line that passes through P2 and P3, that will be named r23.
+      
+      Now we can also define:
+      
+      -The equation of the line that is parallel to r23 and passes through P1, that will be named r1;
+      -The equation of the line that is parallel to r13 and passes through P2, that will be named r2;
+      -The equation of the line that is parallel to r12 and passes through P3. that will be named r3;
+      
+      By definition, in Euclidean geometry, a parallelogram is a simple (non-self-intersecting) 
+      quadrilateral with two pairs of parallel sides. Therefore, given P1, P2 and P3, 
+      we have 3 possible parallelograms:
 
-    -The first parallelogram has the 4th point positioned at the intersection of r3 and r2;
-    -The second parallelogram has the 4th point positioned at the intersection of r1 and r3;
-    -The third parallelogram has the 4th point positioned at the intersection of r2 and r1;
+      -The first parallelogram has the 4th point positioned at the intersection of r3 and r2;
+      -The second parallelogram has the 4th point positioned at the intersection of r1 and r3;
+      -The third parallelogram has the 4th point positioned at the intersection of r2 and r1;
 
-    If there's a line that passes through P1, P2 and P3, then is not possible to define 
-    any parallelogram!
+      If there's a line that passes through P1, P2 and P3, then is not possible to define 
+      any parallelogram!
     `, () => {
       test(`
         When:
@@ -121,6 +128,40 @@ describe('Parallelogram Draw Tests', () => {
         expect(positions4thPoints[1].coordinateY).toBeNull();
         expect(positions4thPoints[2].coordinateX).toBeNull();
         expect(positions4thPoints[2].coordinateY).toBeNull();
+      });
+    });
+    describe(`
+      Defining parallelogram's Polyline expression:
+    `, () => {
+      test(`
+        When P1, P2, P3, P4 are vertices of a parallelogram and:
+          -P1 is positioned at (0,10)
+          -P2 is positioned at (0,0)
+          -P3 is positioned at (10,0)
+          -P4 is positioned at (10,10)
+        definePolylineExpression(P1, P2, P3, P4) should return a expression to form a parallelogram`, () => {
+        const expression = definePolylineExpression(
+          P1,
+          P2,
+          P3,
+          { coordinateX: 10, coordinateY: 10 }
+        );
+        expect(expression).toBeTruthy();
+      });
+      test(`
+        When P1, P2, P3, P4 are not vertices of a parallelogram and:
+          -P1 is positioned at (0,10)
+          -P2 is positioned at (0,0)
+          -P3 is positioned at (10,0)
+          -P4 is positioned at (15,10)
+        definePolylineExpression(P1, P2, P3, P4) should return null`, () => {
+        const expression = definePolylineExpression(
+          P1,
+          P2,
+          P3,
+          { coordinateX: 15, coordinateY: 10 }
+        );
+        expect(expression).toBeNull();
       });
     });
   });

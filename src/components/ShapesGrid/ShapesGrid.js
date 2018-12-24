@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Polyline } from 'react-shapes';
 
-import { define4thPoints } from '../../utils/parallelogramDraw';
+import { define4thPoints, definePolylineExpression } from '../../utils/parallelogramDraw';
 import { GridContainer, FlexDiv } from './ShapesGridStyles';
 import Dot, { offsetX, offsetY } from '../Dot/Point';
 
@@ -44,11 +44,7 @@ class shapesGrid extends Component {
           ))}
           {points.length === 4 && (
             <Polyline
-              points={`
-                ${points[0].coordinateX},${points[0].coordinateY} ${points[1].coordinateX},${points[1].coordinateY} 
-                ${points[2].coordinateX},${points[2].coordinateY} ${points[3].coordinateX},${points[3].coordinateY} 
-                ${points[0].coordinateX},${points[0].coordinateY}
-              `}
+              points={definePolylineExpression(points[0], points[1], points[2], points[3])}
               fill={{ color: 'transparent' }}
               stroke={{ color: '#E65243' }}
               strokeWidth={3}
