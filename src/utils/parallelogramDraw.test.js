@@ -3,6 +3,12 @@ import define4thPoints from './parallelogramDraw';
 const P1 = { coordinateX: 0, coordinateY: 10 };
 const P2 = { coordinateX: 0, coordinateY: 0 };
 const P3 = { coordinateX: 10, coordinateY: 0 };
+const P4 = { coordinateX: 4, coordinateY: 8 };
+const P5 = { coordinateX: 0, coordinateY: 4 };
+const P6 = { coordinateX: 4, coordinateY: 0 };
+const P7 = { coordinateX: 0, coordinateY: 0 };
+const P8 = { coordinateX: 2, coordinateY: 2 };
+const P9 = { coordinateX: 4, coordinateY: 4 };
 
 describe('Parallelogram Draw Tests', () => {
   describe('Smoke tests', () => {
@@ -30,6 +36,9 @@ describe('Parallelogram Draw Tests', () => {
     -The first parallelogram has the 4th point positioned at the intersection of r3 and r2;
     -The second parallelogram has the 4th point positioned at the intersection of r1 and r3;
     -The third parallelogram has the 4th point positioned at the intersection of r2 and r1;
+
+    If there's a line that passes through P1, P2 and P3, then is not possible to define 
+    any parallelogram!
     `, () => {
       test(`
         When:
@@ -47,6 +56,37 @@ describe('Parallelogram Draw Tests', () => {
         expect(positions4thPoints[1].coordinateY).toBe(10);
         expect(positions4thPoints[2].coordinateX).toBe(-10);
         expect(positions4thPoints[2].coordinateY).toBe(10);
+      });
+      test(`
+        When:
+          -P1 is positioned at (4,8)
+          -P2 is positioned at (0,4)
+          -P3 is positioned at (4,0)
+        Then:
+          -The 4th point of the first parallelogram will be at (0, -4)
+          -The 4th point of the second parallelogram will be at (8, 4)
+          -The 4th point of the third parallelogram will be at (0, 12)`, () => {
+        const positions4thPoints = define4thPoints(P4, P5, P6);
+        expect(positions4thPoints[0].coordinateX).toBeCloseTo(0);
+        expect(positions4thPoints[0].coordinateY).toBe(-4);
+        expect(positions4thPoints[1].coordinateX).toBe(8);
+        expect(positions4thPoints[1].coordinateY).toBe(4);
+        expect(positions4thPoints[2].coordinateX).toBeCloseTo(0);
+        expect(positions4thPoints[2].coordinateY).toBe(12);
+      });
+      test(`
+        When:
+          -P1 is positioned at (0,0)
+          -P2 is positioned at (2,2)
+          -P3 is positioned at (4,4)
+        Then there's no possible parallelogram to be formed.`, () => {
+        const positions4thPoints = define4thPoints(P7, P8, P9);
+        expect(positions4thPoints[0].coordinateX).toBeNull();
+        expect(positions4thPoints[0].coordinateY).toBeNull();
+        expect(positions4thPoints[1].coordinateX).toBeNull();
+        expect(positions4thPoints[1].coordinateY).toBeNull();
+        expect(positions4thPoints[2].coordinateX).toBeNull();
+        expect(positions4thPoints[2].coordinateY).toBeNull();
       });
     });
   });

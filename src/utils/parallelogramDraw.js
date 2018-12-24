@@ -10,6 +10,15 @@ const define4thPoints = (P1, P2, P3) => {
     ? (P3.coordinateY - P2.coordinateY) / (P3.coordinateX - P2.coordinateX)
     : (P3.coordinateY - P2.coordinateY) / 0.0001;
 
+  // check if points belong to the same line
+  if (m1 === m2 || m1 === m3 || m2 === m3) {
+    return [
+      { coordinateX: null, coordinateY: null },
+      { coordinateX: null, coordinateY: null },
+      { coordinateX: null, coordinateY: null },
+    ];
+  }
+
   // defining intersection points
   const Y1 = ((m1 * m2 * (P3.coordinateX - P2.coordinateX))
     + (m2 * P2.coordinateY)
