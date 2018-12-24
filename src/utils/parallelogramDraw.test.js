@@ -1,4 +1,4 @@
-import define4thPoints from './parallelogramDraw';
+import { define4thPoints, defineAngularCoefficient } from './parallelogramDraw';
 
 const P1 = { coordinateX: 0, coordinateY: 10 };
 const P2 = { coordinateX: 0, coordinateY: 0 };
@@ -9,14 +9,48 @@ const P6 = { coordinateX: 4, coordinateY: 0 };
 const P7 = { coordinateX: 0, coordinateY: 0 };
 const P8 = { coordinateX: 2, coordinateY: 2 };
 const P9 = { coordinateX: 4, coordinateY: 4 };
+const P10 = { coordinateX: -4, coordinateY: 4 };
 
 describe('Parallelogram Draw Tests', () => {
-  describe('Smoke tests', () => {
+  describe(`
+    *** Smoke tests ***
+  `, () => {
     test('Function define4thPoints must exist', () => {
       expect(define4thPoints).toBeDefined();
     });
+    test('Function defineAngularCoefficient must exist', () => {
+      expect(defineAngularCoefficient).toBeDefined();
+    });
   });
-  describe('Defining the position of the 4th point of the parallelogram', () => {
+  describe(`
+    *** Defining the position of the 4th point of the parallelogram ***
+  `, () => {
+    describe('Calculating the angular coefficient of a line that passes through points P1 and P2', () => {
+      test(`
+        When:
+          -P1 is positioned at (0, 0)
+          -P2 is positioned at (4, 4)
+        Then the angular coefficient will be m = 1
+      `, () => {
+        expect(defineAngularCoefficient(P7, P9)).toBe(1);
+      });
+      test(`
+        When:
+          -P1 is positioned at (0, 0)
+          -P2 is positioned at (-4, 4)
+        Then the angular coefficient will be m = -1
+      `, () => {
+        expect(defineAngularCoefficient(P7, P10)).toBe(-1);
+      });
+      test(`
+        When:
+          -P1 is positioned at (0, 0)
+          -P2 is positioned at (0, 10)
+        Then the angular coefficient will be approximate to 100000, since the line is parallel to the y axis
+      `, () => {
+        expect(defineAngularCoefficient(P7, P1)).toBe(100000);
+      });
+    });
     describe(`If the position of 3 points (P1, P2, P3) of a parallelogram is known, we can define:
     
     -The equation of the line that passes through P1 and P2, that will be named r12.

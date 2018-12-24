@@ -1,14 +1,15 @@
-const define4thPoints = (P1, P2, P3) => {
+export const defineAngularCoefficient = (P1, P2) => {
+  const m = P1.coordinateX - P2.coordinateX !== 0
+    ? (P1.coordinateY - P2.coordinateY) / (P1.coordinateX - P2.coordinateX)
+    : 100000;
+  return m;
+};
+
+export const define4thPoints = (P1, P2, P3) => {
   // defining angular coefficient
-  const m1 = P3.coordinateX - P1.coordinateX !== 0
-    ? (P3.coordinateY - P1.coordinateY) / (P3.coordinateX - P1.coordinateX)
-    : (P3.coordinateY - P1.coordinateY) / 0.0001;
-  const m2 = P2.coordinateX - P1.coordinateX !== 0
-    ? (P2.coordinateY - P1.coordinateY) / (P2.coordinateX - P1.coordinateX)
-    : (P2.coordinateY - P1.coordinateY) / 0.0001;
-  const m3 = P3.coordinateX - P2.coordinateX !== 0
-    ? (P3.coordinateY - P2.coordinateY) / (P3.coordinateX - P2.coordinateX)
-    : (P3.coordinateY - P2.coordinateY) / 0.0001;
+  const m1 = defineAngularCoefficient(P3, P1);
+  const m2 = defineAngularCoefficient(P2, P1);
+  const m3 = defineAngularCoefficient(P3, P2);
 
   // check if points belong to the same line
   if (m1 === m2 || m1 === m3 || m2 === m3) {
@@ -45,5 +46,3 @@ const define4thPoints = (P1, P2, P3) => {
     { coordinateX: Math.round(X3), coordinateY: Math.round(Y3) },
   ];
 };
-
-export default define4thPoints;
