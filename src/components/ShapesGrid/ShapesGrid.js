@@ -37,6 +37,7 @@ class shapesGrid extends Component {
     this.toastr = React.createRef();
     this.gridClick = this.gridClick.bind(this);
     this.clearPoints = this.clearPoints.bind(this);
+    this.adjustCenterOfMass = this.adjustCenterOfMass.bind(this);
   }
 
   gridClick(event) {
@@ -89,6 +90,16 @@ class shapesGrid extends Component {
     }));
   }
 
+  adjustCenterOfMass() {
+    const { centerOfMass } = this.state;
+    const horizontalOffset = 4;
+    const verticalOffset = 5;
+    return [
+      centerOfMass.coordinateX + horizontalOffset,
+      centerOfMass.coordinateY + verticalOffset,
+    ];
+  }
+
   clearPoints() {
     this.setState(() => ({
       points: [],
@@ -99,7 +110,8 @@ class shapesGrid extends Component {
   }
 
   render() {
-    const { points, area } = this.state;
+    const { points, area, centerOfMass } = this.state;
+    const circleRadius = area ? Math.sqrt(area / Math.PI) : 0;
     return (
       <div>
         <ToastContainer
@@ -115,13 +127,29 @@ class shapesGrid extends Component {
             {points.map((point, index) => (
               <Dot key={`dot_${index}`} coordinateX={point.coordinateX} coordinateY={point.coordinateY} />
             ))}
-            {points.length === 4 && (
-              <Polyline
-                points={definePolylineExpression(points[0], points[1], points[2], points[3])}
-                fill={{ color: 'transparent' }}
-                stroke={{ color: 'blue' }}
-                strokeWidth={3}
-              />
+            {points.length === 4 && centerOfMass && area && (
+              <div>
+                <div style={{ position: 'absolute' }}>
+                  <Polyline
+                    points={definePolylineExpression(points[0], points[1], points[2], points[3])}
+                    fill={{ color: 'transparent' }}
+                    stroke={{ color: 'blue' }}
+                    strokeWidth={3}
+                  />
+                </div>
+                <div>
+                  <svg height={490} width={790}>
+                    <circle
+                      cx={this.adjustCenterOfMass()[0]}
+                      cy={this.adjustCenterOfMass()[1]}
+                      r={circleRadius}
+                      stroke="yellow"
+                      strokeWidth="3"
+                      fill="transparent"
+                    />
+                  </svg>
+                </div>
+              </div>
             )}
           </GridContainer>
         </FlexDiv>
