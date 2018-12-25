@@ -1,4 +1,12 @@
-import { define4thPoints, defineAngularCoefficient, definePolylineExpression } from './parallelogramDraw';
+import {
+  define4thPoints,
+  defineAngularCoefficient,
+  definePolylineExpression,
+  defineParallelLinesAngularCoefficients,
+  calculateDistance,
+  calculateAreaOfParallelogram,
+  defineCenterOfMass,
+} from './parallelogramDraw';
 
 const P1 = { coordinateX: 0, coordinateY: 10 };
 const P2 = { coordinateX: 0, coordinateY: 0 };
@@ -10,6 +18,7 @@ const P7 = { coordinateX: 0, coordinateY: 0 };
 const P8 = { coordinateX: 2, coordinateY: 2 };
 const P9 = { coordinateX: 4, coordinateY: 4 };
 const P10 = { coordinateX: -4, coordinateY: 4 };
+const P11 = { coordinateX: 10, coordinateY: 10 };
 
 describe('Parallelogram Draw Tests', () => {
   describe(`
@@ -23,6 +32,18 @@ describe('Parallelogram Draw Tests', () => {
     });
     test('Function definePolylineExpression must exist', () => {
       expect(definePolylineExpression).toBeDefined();
+    });
+    test('Function defineParallelLinesAngularCoefficients must exist', () => {
+      expect(defineParallelLinesAngularCoefficients).toBeDefined();
+    });
+    test('Function calculateDistance must exist', () => {
+      expect(calculateDistance).toBeDefined();
+    });
+    test('Function calculateAreaOfParallelogram must exist', () => {
+      expect(calculateAreaOfParallelogram).toBeDefined();
+    });
+    test('Function defineCenterOfMass must exist', () => {
+      expect(defineCenterOfMass).toBeDefined();
     });
   });
   describe(`
@@ -52,6 +73,40 @@ describe('Parallelogram Draw Tests', () => {
         Then the angular coefficient will be approximate to 100000, since the line is parallel to the y axis
       `, () => {
         expect(defineAngularCoefficient(P7, P1)).toBe(100000);
+      });
+    });
+    describe(`
+      Define how many pairs of parallel lines that can be formed from 4 points:
+    `, () => {
+      test(`
+        When:
+          -P1 is positioned at (0,10)
+          -P2 is positioned at (0,0)
+          -P3 is positioned at (10,0)
+          -P4 is positioned at (10,10)
+        the result will be 2`, () => {
+        const result = defineParallelLinesAngularCoefficients(
+          P1,
+          P2,
+          P3,
+          { coordinateX: 10, coordinateY: 10 }
+        ).length;
+        expect(result).toBe(2);
+      });
+      test(`
+        When:
+          -P1 is positioned at (0,10)
+          -P2 is positioned at (0,0)
+          -P3 is positioned at (10,0)
+          -P4 is positioned at (10,15)
+        the result will be 1`, () => {
+        const result = defineParallelLinesAngularCoefficients(
+          P1,
+          P2,
+          P3,
+          { coordinateX: 10, coordinateY: 15 }
+        ).length;
+        expect(result).toBe(1);
       });
     });
     describe(`
@@ -162,6 +217,96 @@ describe('Parallelogram Draw Tests', () => {
           { coordinateX: 15, coordinateY: 10 }
         );
         expect(expression).toBeNull();
+      });
+    });
+    describe(`
+      Defining distance between two points:
+    `, () => {
+      test(`
+        When:
+          -P1 is positioned at (0,0)
+          -P2 is positioned at (0,10)
+        the distance between P1 and P2 should be 10`, () => {
+        const distance = calculateDistance(P2, P1);
+        expect(distance).toBe(10);
+      });
+      test(`
+        When:
+          -P1 is positioned at (0,0)
+          -P2 is positioned at (10,10)
+        the round value of the distance between P1 and P2 should be 14`, () => {
+        const distance = Math.round(calculateDistance(P2, P11));
+        expect(distance).toBe(14);
+      });
+    });
+    describe(`
+      Calculating parallelogram's area:
+    `, () => {
+      test(`
+        When:
+          -P1 is positioned at (0,10)
+          -P2 is positioned at (0,0)
+          -P3 is positioned at (10,0)
+          -P4 is positioned at (10,10)
+        the area should be 100`, () => {
+        const area = calculateAreaOfParallelogram(
+          P1,
+          P2,
+          P3,
+          { coordinateX: 10, coordinateY: 10 }
+        );
+        expect(area).toBe(100);
+      });
+      test(`
+        When:
+          -P1 is positioned at (0,10)
+          -P2 is positioned at (0,0)
+          -P3 is positioned at (10,0)
+          -P4 is positioned at (15,10)
+        the points do not form a parallelogram, and the area should be null`, () => {
+        const area = calculateAreaOfParallelogram(
+          P1,
+          P2,
+          P3,
+          { coordinateX: 15, coordinateY: 10 }
+        );
+        expect(area).toBeNull();
+      });
+    });
+    describe(`
+      Defining parallelogram's center of mass:
+    `, () => {
+      test(`
+        When:
+          -P1 is positioned at (0,4)
+          -P2 is positioned at (4,8)
+          -P3 is positioned at (8,4)
+          -P4 is positioned at (4,0)
+        the center of mass should be at (4,4)`, () => {
+        const centerOfMass = defineCenterOfMass(
+          { coordinateX: 0, coordinateY: 4 },
+          { coordinateX: 4, coordinateY: 8 },
+          { coordinateX: 8, coordinateY: 4 },
+          { coordinateX: 4, coordinateY: 0 }
+        );
+        const { coordinateX, coordinateY } = centerOfMass;
+        expect(coordinateX).toBe(4);
+        expect(coordinateY).toBe(4);
+      });
+      test(`
+        When:
+          -P1 is positioned at (0,4)
+          -P2 is positioned at (4,8)
+          -P3 is positioned at (8,4)
+          -P4 is positioned at (4,7)
+        the points do not form a parallelogram, and the center of mass should be null`, () => {
+        const centerOfMass = defineCenterOfMass(
+          { coordinateX: 0, coordinateY: 4 },
+          { coordinateX: 4, coordinateY: 8 },
+          { coordinateX: 8, coordinateY: 4 },
+          { coordinateX: 4, coordinateY: 7 }
+        );
+        expect(centerOfMass).toBeNull();
       });
     });
   });

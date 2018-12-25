@@ -8,7 +8,7 @@ export const defineAngularCoefficient = (P1, P2) => {
   return m;
 };
 
-export const definePolylineExpression = (P1, P2, P3, P4) => {
+export const defineParallelLinesAngularCoefficients = (P1, P2, P3, P4) => {
   const m12 = defineAngularCoefficient(P1, P2);
   const m13 = defineAngularCoefficient(P1, P3);
   const m14 = defineAngularCoefficient(P1, P4);
@@ -16,21 +16,29 @@ export const definePolylineExpression = (P1, P2, P3, P4) => {
   const m24 = defineAngularCoefficient(P2, P4);
   const m34 = defineAngularCoefficient(P3, P4);
   const angularCoefficients = [m12, m13, m14, m23, m24, m34].sort();
-  const desiredAngularCoefficients = [];
+  const parallelLinesAngularCoefficients = [];
   angularCoefficients.forEach((ac, index) => {
     if (index === 0) {
       return;
     }
     if (ac === angularCoefficients[index - 1]) {
-      desiredAngularCoefficients.push(ac);
+      parallelLinesAngularCoefficients.push(ac);
     }
   });
-  if (desiredAngularCoefficients.length !== 2) {
+  return parallelLinesAngularCoefficients;
+};
+
+export const definePolylineExpression = (P1, P2, P3, P4) => {
+  const m12 = defineAngularCoefficient(P1, P2);
+  const m23 = defineAngularCoefficient(P2, P3);
+  const m24 = defineAngularCoefficient(P2, P4);
+  const parallelLinesAngularCoefficients = defineParallelLinesAngularCoefficients(P1, P2, P3, P4);
+  if (parallelLinesAngularCoefficients.length !== 2) {
     // the points can not be vertices of the same parallelogram
     return null;
   }
-  if (desiredAngularCoefficients.find(ac => ac === m12)
-    && desiredAngularCoefficients.find(ac => ac === m24)) {
+  if (parallelLinesAngularCoefficients.find(ac => ac === m12)
+    && parallelLinesAngularCoefficients.find(ac => ac === m24)) {
     return `
     ${P1.coordinateX - offsetX},${P1.coordinateY - offsetY}
     ${P2.coordinateX - offsetX},${P2.coordinateY - offsetY} 
@@ -39,8 +47,8 @@ export const definePolylineExpression = (P1, P2, P3, P4) => {
     ${P1.coordinateX - offsetX},${P1.coordinateY - offsetY}
     `;
   }
-  if (desiredAngularCoefficients.find(ac => ac === m12)
-    && desiredAngularCoefficients.find(ac => ac === m23)) {
+  if (parallelLinesAngularCoefficients.find(ac => ac === m12)
+    && parallelLinesAngularCoefficients.find(ac => ac === m23)) {
     return `
     ${P1.coordinateX - offsetX},${P1.coordinateY - offsetY}
     ${P2.coordinateX - offsetX},${P2.coordinateY - offsetY} 
@@ -96,4 +104,43 @@ export const define4thPoints = (P1, P2, P3) => {
     { coordinateX: Math.round(X2), coordinateY: Math.round(Y2) },
     { coordinateX: Math.round(X3), coordinateY: Math.round(Y3) },
   ];
+};
+
+export const calculateDistance = (P1, P2) => {
+  const xDifference = P1.coordinateX - P2.coordinateX;
+  const yDifference = P1.coordinateY - P2.coordinateY;
+  return (Math.sqrt((xDifference * xDifference) + (yDifference * yDifference)));
+};
+
+export const calculateAreaOfParallelogram = (P1, P2, P3, P4) => {
+  const parallelLinesAngularCoefficients = defineParallelLinesAngularCoefficients(P1, P2, P3, P4);
+  const m12 = defineAngularCoefficient(P1, P2);
+  const m13 = defineAngularCoefficient(P1, P3);
+
+  if (parallelLinesAngularCoefficients.length !== 2) {
+    return null;
+  }
+  if (!parallelLinesAngularCoefficients.find(ac => ac === m12)) {
+    const distanceP1P2 = calculateDistance(P1, P2);
+    const distanceP3P4 = calculateDistance(P3, P4);
+    return Math.round((distanceP1P2 * distanceP3P4) / 2);
+  }
+  if (!parallelLinesAngularCoefficients.find(ac => ac === m13)) {
+    const distanceP1P3 = calculateDistance(P1, P3);
+    const distanceP2P4 = calculateDistance(P2, P4);
+    return Math.round((distanceP1P3 * distanceP2P4) / 2);
+  }
+  const distanceP1P4 = calculateDistance(P1, P4);
+  const distanceP2P3 = calculateDistance(P2, P3);
+  return Math.round((distanceP1P4 * distanceP2P3) / 2);
+};
+
+export const defineCenterOfMass = (P1, P2, P3, P4) => {
+  const parallelLinesAngularCoefficients = defineParallelLinesAngularCoefficients(P1, P2, P3, P4);
+  if (parallelLinesAngularCoefficients.length !== 2) {
+    return null;
+  }
+  const coordinateX = (P1.coordinateX + P2.coordinateX + P3.coordinateX + P4.coordinateX) / 4;
+  const coordinateY = (P1.coordinateY + P2.coordinateY + P3.coordinateY + P4.coordinateY) / 4;
+  return { coordinateX, coordinateY };
 };
