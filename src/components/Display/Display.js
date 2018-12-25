@@ -6,6 +6,7 @@ const Display = (props) => {
   const { points, area } = props;
   return (
     <StyledDisplay>
+      {!points.length ? 'NO DATA TO SHOW!' : ''}
       {points.map((point, index) => (
         <div key={`display_point_info_${index}`}>
           {`POSITION OF POINT P${index + 1}: (${point.coordinateX},${point.coordinateY})`}

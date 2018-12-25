@@ -9,7 +9,7 @@ import {
   calculateAreaOfParallelogram,
   checkIfPointsAreTooClose,
 } from '../../utils/parallelogramDraw';
-import { GridContainer, FlexDiv } from './ShapesGridStyles';
+import { GridContainer, FlexDiv, ActionsDiv } from './ShapesGridStyles';
 import Dot, { offsetX, offsetY } from '../Dot/Point';
 import Display from '../Display/Display';
 
@@ -36,6 +36,7 @@ class shapesGrid extends Component {
     this.shapesGrid = React.createRef();
     this.toastr = React.createRef();
     this.gridClick = this.gridClick.bind(this);
+    this.clearPoints = this.clearPoints.bind(this);
   }
 
   gridClick(event) {
@@ -60,8 +61,11 @@ class shapesGrid extends Component {
       return;
     }
     let area = null;
+    let resultsFor4thPoint = [];
+    let centerOfMass = null;
     if (copyOfPoints.length === 3) {
-      const P4 = define4thPoints(copyOfPoints[0], copyOfPoints[1], copyOfPoints[2])[0];
+      resultsFor4thPoint = define4thPoints(copyOfPoints[0], copyOfPoints[1], copyOfPoints[2]);
+      const P4 = resultsFor4thPoint[0];
       copyOfPoints.push(P4);
       area = calculateAreaOfParallelogram(
         copyOfPoints[0],
@@ -69,8 +73,29 @@ class shapesGrid extends Component {
         copyOfPoints[2],
         copyOfPoints[3]
       );
+      centerOfMass = defineCenterOfMass(
+        copyOfPoints[0],
+        copyOfPoints[1],
+        copyOfPoints[2],
+        copyOfPoints[3]
+      );
     }
-    this.setState(prevState => ({ ...prevState, points: copyOfPoints, area }));
+    this.setState(prevState => ({
+      ...prevState,
+      points: copyOfPoints,
+      area,
+      resultsFor4thPoint,
+      centerOfMass,
+    }));
+  }
+
+  clearPoints() {
+    this.setState(() => ({
+      points: [],
+      centerOfMass: null,
+      area: null,
+      resultsFor4thPoint: [],
+    }));
   }
 
   render() {
@@ -100,6 +125,18 @@ class shapesGrid extends Component {
             )}
           </GridContainer>
         </FlexDiv>
+        <ActionsDiv>
+          {/* <button type="button" className="btn btn-warning">SHUFFLE</button>
+          <br /> */}
+          <button
+            type="button"
+            className="btn btn-info"
+            disabled={!points.length}
+            onClick={() => this.clearPoints()}
+          >
+            CLEAR
+          </button>
+        </ActionsDiv>
       </div>
     );
   }

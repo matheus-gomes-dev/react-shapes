@@ -15,3 +15,15 @@ export const FlexDiv = styled.div`
   align-items: center;
   justify-content: center;
 `;
+
+export const ActionsDiv = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin: 30px;
+  button {
+    margin: 10px;
+    width: 400px;
+  }
+`;
