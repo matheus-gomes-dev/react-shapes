@@ -11,6 +11,16 @@ import { GridContainer, FlexDiv } from './ShapesGridStyles';
 import Dot, { offsetX, offsetY } from '../Dot/Point';
 import Display from '../Display/Display';
 
+const limitX = 785;
+const limitY = 485;
+const checkBoundaries = (point) => {
+  let anwser = true;
+  if (point.coordinateX > limitX || point.coordinateX < 0
+  || point.coordinateY > limitY || point.coordinateY < 0) {
+    anwser = false;
+  }
+  return anwser;
+};
 
 class shapesGrid extends Component {
   constructor(props) {
@@ -19,6 +29,7 @@ class shapesGrid extends Component {
       points: [],
       centerOfMass: null,
       area: null,
+      resultsFor4thPoint: [],
     };
     this.shapesGrid = React.createRef();
     this.gridClick = this.gridClick.bind(this);
@@ -31,6 +42,10 @@ class shapesGrid extends Component {
     }
     const coordinateX = event.pageX - this.shapesGrid.offsetLeft - offsetX;
     const coordinateY = event.pageY - this.shapesGrid.offsetTop - offsetY;
+    if (!checkBoundaries({ coordinateX, coordinateY })) {
+      alert('Point out of boundaries!');
+      return;
+    }
     points.push({ coordinateX, coordinateY });
     let area = null;
     if (points.length === 3) {
