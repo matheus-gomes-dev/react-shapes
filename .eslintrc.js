@@ -24,7 +24,8 @@ module.exports = {
     "no-unexpected-multiline": "warn",
     "react/jsx-filename-extension": [1, { extensions: [".js", ".jsx"] }],
     "jsx-a11y/no-static-element-interactions": 0,
-    "jsx-a11y/click-events-have-key-events": 0
+    "jsx-a11y/click-events-have-key-events": 0,
+    "react/no-array-index-key": 0,
   },
   settings: {
     react: {

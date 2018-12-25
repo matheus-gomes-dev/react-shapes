@@ -30,25 +30,28 @@ export const defineParallelLinesAngularCoefficients = (P1, P2, P3, P4) => {
 
 export const definePolylineExpression = (P1, P2, P3, P4) => {
   const m12 = defineAngularCoefficient(P1, P2);
-  const m23 = defineAngularCoefficient(P2, P3);
-  const m24 = defineAngularCoefficient(P2, P4);
+  const m13 = defineAngularCoefficient(P1, P3);
+  const m14 = defineAngularCoefficient(P1, P4);
   const parallelLinesAngularCoefficients = defineParallelLinesAngularCoefficients(P1, P2, P3, P4);
   if (parallelLinesAngularCoefficients.length !== 2) {
     // the points can not be vertices of the same parallelogram
     return null;
   }
-  if (parallelLinesAngularCoefficients.find(ac => ac === m12)
-    && parallelLinesAngularCoefficients.find(ac => ac === m24)) {
+  console.log('************');
+  console.log(parallelLinesAngularCoefficients);
+  console.log(m12);
+  if (parallelLinesAngularCoefficients.find(ac => ac === m12) === undefined) {
+    console.log('CASO 1!');
     return `
     ${P1.coordinateX - offsetX},${P1.coordinateY - offsetY}
-    ${P2.coordinateX - offsetX},${P2.coordinateY - offsetY} 
-    ${P4.coordinateX - offsetX},${P4.coordinateY - offsetY}
     ${P3.coordinateX - offsetX},${P3.coordinateY - offsetY} 
+    ${P2.coordinateX - offsetX},${P2.coordinateY - offsetY}
+    ${P4.coordinateX - offsetX},${P4.coordinateY - offsetY} 
     ${P1.coordinateX - offsetX},${P1.coordinateY - offsetY}
     `;
   }
-  if (parallelLinesAngularCoefficients.find(ac => ac === m12)
-    && parallelLinesAngularCoefficients.find(ac => ac === m23)) {
+  if (parallelLinesAngularCoefficients.find(ac => ac === m13) === undefined) {
+    console.log('CASO 2!');
     return `
     ${P1.coordinateX - offsetX},${P1.coordinateY - offsetY}
     ${P2.coordinateX - offsetX},${P2.coordinateY - offsetY} 
@@ -57,11 +60,12 @@ export const definePolylineExpression = (P1, P2, P3, P4) => {
     ${P1.coordinateX - offsetX},${P1.coordinateY - offsetY}
     `;
   }
+  console.log('CASO 3!');
   return `
   ${P1.coordinateX - offsetX},${P1.coordinateY - offsetY}
   ${P3.coordinateX - offsetX},${P3.coordinateY - offsetY} 
-  ${P2.coordinateX - offsetX},${P2.coordinateY - offsetY}
-  ${P4.coordinateX - offsetX},${P4.coordinateY - offsetY} 
+  ${P4.coordinateX - offsetX},${P4.coordinateY - offsetY}
+  ${P2.coordinateX - offsetX},${P2.coordinateY - offsetY} 
   ${P1.coordinateX - offsetX},${P1.coordinateY - offsetY}
   `;
 };
@@ -120,12 +124,12 @@ export const calculateAreaOfParallelogram = (P1, P2, P3, P4) => {
   if (parallelLinesAngularCoefficients.length !== 2) {
     return null;
   }
-  if (!parallelLinesAngularCoefficients.find(ac => ac === m12)) {
+  if (parallelLinesAngularCoefficients.find(ac => ac === m12) === undefined) {
     const distanceP1P2 = calculateDistance(P1, P2);
     const distanceP3P4 = calculateDistance(P3, P4);
     return Math.round((distanceP1P2 * distanceP3P4) / 2);
   }
-  if (!parallelLinesAngularCoefficients.find(ac => ac === m13)) {
+  if (parallelLinesAngularCoefficients.find(ac => ac === m13) === undefined) {
     const distanceP1P3 = calculateDistance(P1, P3);
     const distanceP2P4 = calculateDistance(P2, P4);
     return Math.round((distanceP1P3 * distanceP2P4) / 2);
