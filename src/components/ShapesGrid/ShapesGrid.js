@@ -10,7 +10,7 @@ import {
   checkIfPointsAreTooClose,
 } from '../../utils/parallelogramDraw';
 import { GridContainer, FlexDiv, ActionsDiv } from './ShapesGridStyles';
-import Dot, { offsetX, offsetY } from '../Dot/Point';
+import Point, { offsetX, offsetY } from '../Point/Point';
 import Display from '../Display/Display';
 
 const limitX = 785;
@@ -125,7 +125,7 @@ class shapesGrid extends Component {
             onClick={this.gridClick}
           >
             {points.map((point, index) => (
-              <Dot key={`dot_${index}`} coordinateX={point.coordinateX} coordinateY={point.coordinateY} />
+              <Point key={`point_${index}`} coordinateX={point.coordinateX} coordinateY={point.coordinateY} />
             ))}
             {points.length === 4 && centerOfMass && area && (
               <div>
@@ -162,7 +162,7 @@ class shapesGrid extends Component {
             disabled={!points.length}
             onClick={() => this.clearPoints()}
           >
-            CLEAR
+            RESET
           </button>
         </ActionsDiv>
       </div>

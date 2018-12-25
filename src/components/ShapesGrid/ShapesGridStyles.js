@@ -8,6 +8,7 @@ export const GridContainer = styled.div`
   border-radius: 5px;
   position: relative;
   margin-top: 30px;
+  cursor: crosshair;
 `;
 
 export const FlexDiv = styled.div`

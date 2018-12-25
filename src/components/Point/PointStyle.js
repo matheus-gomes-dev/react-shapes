@@ -16,4 +16,5 @@ export const BlackDotBorder = styled.div`
   justify-content: center;
   border-radius: 100%;
   position: absolute;
+  z-index: 2;
 `;
