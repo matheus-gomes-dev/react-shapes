@@ -31,17 +31,12 @@ export const defineParallelLinesAngularCoefficients = (P1, P2, P3, P4) => {
 export const definePolylineExpression = (P1, P2, P3, P4) => {
   const m12 = defineAngularCoefficient(P1, P2);
   const m13 = defineAngularCoefficient(P1, P3);
-  const m14 = defineAngularCoefficient(P1, P4);
   const parallelLinesAngularCoefficients = defineParallelLinesAngularCoefficients(P1, P2, P3, P4);
   if (parallelLinesAngularCoefficients.length !== 2) {
     // the points can not be vertices of the same parallelogram
     return null;
   }
-  console.log('************');
-  console.log(parallelLinesAngularCoefficients);
-  console.log(m12);
   if (parallelLinesAngularCoefficients.find(ac => ac === m12) === undefined) {
-    console.log('CASO 1!');
     return `
     ${P1.coordinateX - offsetX},${P1.coordinateY - offsetY}
     ${P3.coordinateX - offsetX},${P3.coordinateY - offsetY} 
@@ -51,7 +46,6 @@ export const definePolylineExpression = (P1, P2, P3, P4) => {
     `;
   }
   if (parallelLinesAngularCoefficients.find(ac => ac === m13) === undefined) {
-    console.log('CASO 2!');
     return `
     ${P1.coordinateX - offsetX},${P1.coordinateY - offsetY}
     ${P2.coordinateX - offsetX},${P2.coordinateY - offsetY} 
@@ -60,7 +54,6 @@ export const definePolylineExpression = (P1, P2, P3, P4) => {
     ${P1.coordinateX - offsetX},${P1.coordinateY - offsetY}
     `;
   }
-  console.log('CASO 3!');
   return `
   ${P1.coordinateX - offsetX},${P1.coordinateY - offsetY}
   ${P3.coordinateX - offsetX},${P3.coordinateY - offsetY} 
@@ -147,4 +140,25 @@ export const defineCenterOfMass = (P1, P2, P3, P4) => {
   const coordinateX = (P1.coordinateX + P2.coordinateX + P3.coordinateX + P4.coordinateX) / 4;
   const coordinateY = (P1.coordinateY + P2.coordinateY + P3.coordinateY + P4.coordinateY) / 4;
   return { coordinateX, coordinateY };
+};
+
+export const checkIfPointsAreTooClose = (points) => {
+  console.log('******************');
+  let answer = false;
+  if (points.length === 1) {
+    return answer;
+  }
+  points.forEach((point, index) => {
+    if (index === 0) {
+      return;
+    }
+    for (let i = 0; i < index; i += 1) {
+      if (calculateDistance(point, points[i]) < 12) {
+        answer = true;
+      }
+    }
+  });
+  console.log(points);
+  console.log(answer);
+  return answer;
 };

@@ -6,6 +6,7 @@ import {
   calculateDistance,
   calculateAreaOfParallelogram,
   defineCenterOfMass,
+  checkIfPointsAreTooClose,
 } from './parallelogramDraw';
 
 const P1 = { coordinateX: 0, coordinateY: 10 };
@@ -44,6 +45,9 @@ describe('Parallelogram Draw Tests', () => {
     });
     test('Function defineCenterOfMass must exist', () => {
       expect(defineCenterOfMass).toBeDefined();
+    });
+    test('Function checkIfPointsAreTooClose must exist', () => {
+      expect(checkIfPointsAreTooClose).toBeDefined();
     });
   });
   describe(`
@@ -307,6 +311,36 @@ describe('Parallelogram Draw Tests', () => {
           { coordinateX: 4, coordinateY: 7 }
         );
         expect(centerOfMass).toBeNull();
+      });
+    });
+    describe(`
+      Checking if points are too close to form a parallelogram:
+    `, () => {
+      test(`
+        When:
+          -P1 is positioned at (0,0)
+          -P2 is positioned at (30,0)
+          -P2 is positioned at (0,5)
+        the distance for a pair of points is less than 11px, so they are too close`, () => {
+        const answer = checkIfPointsAreTooClose([
+          { coordinateX: 0, coordinateY: 0 },
+          { coordinateX: 30, coordinateY: 0 },
+          { coordinateX: 0, coordinateY: 5 },
+        ]);
+        expect(answer).toBeTruthy();
+      });
+      test(`
+        When:
+          -P1 is positioned at (0,0)
+          -P2 is positioned at (12,0)
+          -P2 is positioned at (0,12)
+        there's no distance for a pair of points that is less than 11px, so they are not too close`, () => {
+        const answer = checkIfPointsAreTooClose([
+          { coordinateX: 0, coordinateY: 0 },
+          { coordinateX: 12, coordinateY: 0 },
+          { coordinateX: 0, coordinateY: 12 },
+        ]);
+        expect(answer).toBeFalsy();
       });
     });
   });
