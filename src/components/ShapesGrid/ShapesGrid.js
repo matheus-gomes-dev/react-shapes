@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Polyline } from 'react-shapes';
 import { ToastContainer } from 'react-toastr';
 import PropTypes from 'prop-types';
 
@@ -134,26 +133,22 @@ class shapesGrid extends Component {
             <Points />
             {points.length === 4 && centerOfMass && area && (
               <div>
-                <div style={{ position: 'absolute' }}>
-                  <Polyline
+                <svg height={490} width={790}>
+                  <polyline
                     points={definePolylineExpression(points[0], points[1], points[2], points[3])}
-                    fill={{ color: 'transparent' }}
-                    stroke={{ color: 'blue' }}
-                    strokeWidth={3}
+                    stroke="blue"
+                    strokeWidth="3"
+                    fill="transparent"
                   />
-                </div>
-                <div>
-                  <svg height={490} width={790}>
-                    <circle
-                      cx={this.adjustCenterOfMass()[0]}
-                      cy={this.adjustCenterOfMass()[1]}
-                      r={circleRadius}
-                      stroke="yellow"
-                      strokeWidth="3"
-                      fill="transparent"
-                    />
-                  </svg>
-                </div>
+                  <circle
+                    cx={this.adjustCenterOfMass()[0]}
+                    cy={this.adjustCenterOfMass()[1]}
+                    r={circleRadius}
+                    stroke="yellow"
+                    strokeWidth="3"
+                    fill="transparent"
+                  />
+                </svg>
               </div>
             )}
           </GridContainer>

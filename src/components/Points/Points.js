@@ -21,17 +21,6 @@ class Points extends Component {
         draggable
         style={{ left: point.coordinateX, top: point.coordinateY, cursor }}
         onPointerDown={() => this.setState(() => ({ cursor: 'grabbing' }))}
-        onPointerUp={() => this.setState(() => ({ cursor: 'grab' }))}
-        onPointerLeave={() => this.setState(() => ({ cursor: 'grab' }))}
-        onDragOver={e => e.preventDefault()}
-        onDragStart={(e) => {
-          e.preventDefault();
-          console.log('dragging started!');
-          console.log(e.movementX);
-        }}
-        onDrop={(e) => {
-          console.log('drop!');
-        }}
       >
         <BlackDot />
       </BlackDotBorder>
