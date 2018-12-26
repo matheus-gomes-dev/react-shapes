@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { Polyline } from 'react-shapes';
 import { ToastContainer } from 'react-toastr';
 
@@ -101,6 +103,7 @@ class shapesGrid extends Component {
   }
 
   clearPoints() {
+    console.log(this.props);
     this.setState(() => ({
       points: [],
       centerOfMass: null,
@@ -170,4 +173,9 @@ class shapesGrid extends Component {
   }
 }
 
-export default shapesGrid;
+const mapStateToProps = state => ({ points: state.selectedPoints.points });
+// const mapDispatchToProps = dispatch => bindActionCreators({
+//   getLanguage,
+//   switchLanguage,
+// }, dispatch);
+export default connect(mapStateToProps, null)(shapesGrid);

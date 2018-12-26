@@ -143,7 +143,6 @@ export const defineCenterOfMass = (P1, P2, P3, P4) => {
 };
 
 export const checkIfPointsAreTooClose = (points) => {
-  console.log('******************');
   let answer = false;
   if (points.length === 1) {
     return answer;
@@ -158,7 +157,5 @@ export const checkIfPointsAreTooClose = (points) => {
       }
     }
   });
-  console.log(points);
-  console.log(answer);
   return answer;
 };
