@@ -43,6 +43,8 @@ class shapesGrid extends Component {
     this.adjustCenterOfMass = this.adjustCenterOfMass.bind(this);
     this.movingMouseOverGrid = this.movingMouseOverGrid.bind(this);
     this.stopMoving = this.stopMoving.bind(this);
+    this.shuffleParallelogram = this.shuffleParallelogram.bind(this);
+    this.check4thPoints = this.check4thPoints.bind(this);
   }
 
   gridClick(event) {
@@ -74,7 +76,10 @@ class shapesGrid extends Component {
     let resultsFor4thPoint = [];
     let centerOfMass = null;
     if (copyOfPoints.length === 3) {
-      resultsFor4thPoint = define4thPoints(copyOfPoints[0], copyOfPoints[1], copyOfPoints[2]);
+      resultsFor4thPoint = this.check4thPoints(copyOfPoints);
+      if (!resultsFor4thPoint.length) {
+        return;
+      }
       const P4 = resultsFor4thPoint[0];
       copyOfPoints.push(P4);
       area = calculateAreaOfParallelogram(
@@ -97,6 +102,23 @@ class shapesGrid extends Component {
       resultsFor4thPoint,
       centerOfMass,
     }));
+  }
+
+  check4thPoints(points) {
+    let resultsFor4thPoint = define4thPoints(points[0], points[1], points[2]);
+    resultsFor4thPoint = resultsFor4thPoint.filter(point => checkBoundaries(point));
+    if (!resultsFor4thPoint.length) {
+      this.toastr.warning(
+        'It is impossible to form any parallelogram within the box boundaries, with these points!',
+        'Bad combination of points',
+        { closeButton: true }
+      );
+    }
+    return resultsFor4thPoint;
+  }
+
+  shuffleParallelogram() {
+    return null;
   }
 
   movingMouseOverGrid(event) {
@@ -122,11 +144,16 @@ class shapesGrid extends Component {
       return;
     }
     setNewPoints(copyOfPoints);
+    const resultsFor4thPoint = this.check4thPoints(copyOfPoints);
     const newCenterOfMass = {
       coordinateX: centerOfMass.coordinateX + event.movementX,
       coordinateY: centerOfMass.coordinateY + event.movementY,
     };
-    this.setState(prevState => ({ ...prevState, centerOfMass: newCenterOfMass }));
+    this.setState(prevState => ({
+      ...prevState,
+      centerOfMass: newCenterOfMass,
+      resultsFor4thPoint
+    }));
   }
 
   stopMoving() {
@@ -196,8 +223,15 @@ class shapesGrid extends Component {
           </GridContainer>
         </FlexDiv>
         <ActionsDiv>
-          {/* <button type="button" className="btn btn-warning">SHUFFLE</button>
-          <br /> */}
+          <button
+            type="button"
+            className="btn btn-warning"
+            disabled={points.length !== 4}
+            onClick={() => this.shuffleParallelogram()}
+          >
+            SHUFFLE
+          </button>
+          <br />
           <button
             type="button"
             className="btn btn-info"
