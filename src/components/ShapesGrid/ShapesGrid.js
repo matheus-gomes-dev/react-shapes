@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Polyline } from 'react-shapes';
 import { ToastContainer } from 'react-toastr';
+import PropTypes from 'prop-types';
 
 import {
   define4thPoints,
@@ -13,6 +14,7 @@ import {
 } from '../../utils/parallelogramDraw';
 import { GridContainer, FlexDiv, ActionsDiv } from './ShapesGridStyles';
 import Point, { offsetX, offsetY } from '../Point/Point';
+import { resetPoints, updatePoints } from '../Point/pointActions';
 import Display from '../Display/Display';
 
 const limitX = 785;
@@ -43,7 +45,7 @@ class shapesGrid extends Component {
   }
 
   gridClick(event) {
-    const { points } = this.state;
+    const { points, updatePoints: setNewPoints } = this.props;
     const copyOfPoints = [...points];
     if (points.length >= 3) {
       return;
@@ -83,9 +85,9 @@ class shapesGrid extends Component {
         copyOfPoints[3]
       );
     }
+    setNewPoints(copyOfPoints);
     this.setState(prevState => ({
       ...prevState,
-      points: copyOfPoints,
       area,
       resultsFor4thPoint,
       centerOfMass,
@@ -103,7 +105,8 @@ class shapesGrid extends Component {
   }
 
   clearPoints() {
-    console.log(this.props);
+    const { resetPoints: clearPoints } = this.props;
+    clearPoints();
     this.setState(() => ({
       points: [],
       centerOfMass: null,
@@ -113,7 +116,8 @@ class shapesGrid extends Component {
   }
 
   render() {
-    const { points, area, centerOfMass } = this.state;
+    const { area, centerOfMass } = this.state;
+    const { points } = this.props;
     const circleRadius = area ? Math.sqrt(area / Math.PI) : 0;
     return (
       <div>
@@ -173,9 +177,19 @@ class shapesGrid extends Component {
   }
 }
 
+shapesGrid.propTypes = {
+  points: PropTypes.arrayOf(PropTypes.object),
+  updatePoints: PropTypes.func.isRequired,
+  resetPoints: PropTypes.func.isRequired,
+};
+
+shapesGrid.defaultProps = {
+  points: [],
+};
+
 const mapStateToProps = state => ({ points: state.selectedPoints.points });
-// const mapDispatchToProps = dispatch => bindActionCreators({
-//   getLanguage,
-//   switchLanguage,
-// }, dispatch);
-export default connect(mapStateToProps, null)(shapesGrid);
+const mapDispatchToProps = dispatch => bindActionCreators({
+  resetPoints,
+  updatePoints,
+}, dispatch);
+export default connect(mapStateToProps, mapDispatchToProps)(shapesGrid);
