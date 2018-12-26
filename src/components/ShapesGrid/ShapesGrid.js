@@ -31,7 +31,6 @@ class shapesGrid extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      points: [],
       centerOfMass: null,
       area: null,
       resultsFor4thPoint: [],
@@ -118,7 +117,43 @@ class shapesGrid extends Component {
   }
 
   shuffleParallelogram() {
-    return null;
+    const { points, updatePoints: setNewPoints } = this.props;
+    const copyOfPoints = [...points];
+    const { resultsFor4thPoint } = this.state;
+    const fourthPointIndex = resultsFor4thPoint.findIndex(fourthPoint => (
+      fourthPoint.coordinateX === points[3].coordinateX
+      && fourthPoint.coordinateY === points[3].coordinateY
+    ));
+    if (fourthPointIndex === -1) {
+      this.toastr.error(
+        'Something went wrong while trying to shuffle parallelogram',
+        'Unexpected behavior',
+        { closeButton: true }
+      );
+      return;
+    }
+    const new4thPointIndex = fourthPointIndex === resultsFor4thPoint.length - 1
+      ? 0
+      : fourthPointIndex + 1;
+    copyOfPoints[3] = resultsFor4thPoint[new4thPointIndex];
+    setNewPoints(copyOfPoints);
+    const area = calculateAreaOfParallelogram(
+      copyOfPoints[0],
+      copyOfPoints[1],
+      copyOfPoints[2],
+      copyOfPoints[3]
+    );
+    const centerOfMass = defineCenterOfMass(
+      copyOfPoints[0],
+      copyOfPoints[1],
+      copyOfPoints[2],
+      copyOfPoints[3]
+    );
+    this.setState(prevState => ({
+      ...prevState,
+      centerOfMass,
+      area,
+    }));
   }
 
   movingMouseOverGrid(event) {
@@ -175,7 +210,6 @@ class shapesGrid extends Component {
     const { resetPoints: clearPoints } = this.props;
     clearPoints();
     this.setState(() => ({
-      points: [],
       centerOfMass: null,
       area: null,
       resultsFor4thPoint: [],
@@ -183,7 +217,7 @@ class shapesGrid extends Component {
   }
 
   render() {
-    const { area, centerOfMass } = this.state;
+    const { area, centerOfMass, resultsFor4thPoint } = this.state;
     const { points } = this.props;
     const circleRadius = area ? Math.sqrt(area / Math.PI) : 0;
     return (
@@ -226,7 +260,7 @@ class shapesGrid extends Component {
           <button
             type="button"
             className="btn btn-warning"
-            disabled={points.length !== 4}
+            disabled={resultsFor4thPoint.length <= 1}
             onClick={() => this.shuffleParallelogram()}
           >
             SHUFFLE

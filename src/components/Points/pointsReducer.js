@@ -9,7 +9,7 @@ export default function (state = INITIAL_STATE, action) {
     case 'POINTS_STARTED_MOVING':
       return { ...state, moving: action.payload };
     case 'POINTS_STOPPED_MOVING':
-      return { ...state, moving: false };
+      return { ...state, moving: {} };
     default:
       return state;
   }
