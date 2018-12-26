@@ -13,7 +13,7 @@ import {
 } from '../../utils/parallelogramDraw';
 import { GridContainer, FlexDiv, ActionsDiv } from './ShapesGridStyles';
 import Points, { offsetX, offsetY } from '../Points/Points';
-import { resetPoints, updatePoints } from '../Points/pointsActions';
+import { resetPoints, updatePoints, stoppedMovingPoint } from '../Points/pointsActions';
 import Display from '../Display/Display';
 
 const limitX = 785;
@@ -41,11 +41,17 @@ class shapesGrid extends Component {
     this.gridClick = this.gridClick.bind(this);
     this.clearPoints = this.clearPoints.bind(this);
     this.adjustCenterOfMass = this.adjustCenterOfMass.bind(this);
+    this.movingMouseOverGrid = this.movingMouseOverGrid.bind(this);
+    this.stopMoving = this.stopMoving.bind(this);
   }
 
   gridClick(event) {
-    const { points, updatePoints: setNewPoints } = this.props;
+    const { points, updatePoints: setNewPoints, isMoving } = this.props;
     const copyOfPoints = [...points];
+    if (isMoving.initialCoordinates) {
+      this.stopMoving();
+      return;
+    }
     if (points.length >= 3) {
       return;
     }
@@ -93,6 +99,31 @@ class shapesGrid extends Component {
     }));
   }
 
+  movingMouseOverGrid(event) {
+    const { isMoving, points, updatePoints: setNewPoints } = this.props;
+    const { centerOfMass } = this.state;
+    if (!isMoving.initialCoordinates) {
+      return;
+    }
+    let copyOfPoints = [...points];
+    copyOfPoints = copyOfPoints.map((point) => {
+      const coordinateX = point.coordinateX + event.movementX;
+      const coordinateY = point.coordinateY + event.movementY;
+      return { coordinateX, coordinateY };
+    });
+    setNewPoints(copyOfPoints);
+    const newCenterOfMass = {
+      coordinateX: centerOfMass.coordinateX + event.movementX,
+      coordinateY: centerOfMass.coordinateY + event.movementY,
+    };
+    this.setState(prevState => ({ ...prevState, centerOfMass: newCenterOfMass }));
+  }
+
+  stopMoving() {
+    const { stoppedMovingPoint: stopMove } = this.props;
+    stopMove();
+  }
+
   adjustCenterOfMass() {
     const { centerOfMass } = this.state;
     const horizontalOffset = 4;
@@ -129,6 +160,7 @@ class shapesGrid extends Component {
           <GridContainer
             ref={(elem) => { this.shapesGrid = elem; }}
             onClick={this.gridClick}
+            onMouseMove={this.movingMouseOverGrid}
           >
             <Points />
             {points.length === 4 && centerOfMass && area && (
@@ -174,15 +206,22 @@ shapesGrid.propTypes = {
   points: PropTypes.arrayOf(PropTypes.object),
   updatePoints: PropTypes.func.isRequired,
   resetPoints: PropTypes.func.isRequired,
+  stoppedMovingPoint: PropTypes.func.isRequired,
+  isMoving: PropTypes.object,
 };
 
 shapesGrid.defaultProps = {
   points: [],
+  isMoving: {},
 };
 
-const mapStateToProps = state => ({ points: state.selectedPoints.points });
+const mapStateToProps = state => ({
+  points: state.selectedPoints.points,
+  isMoving: state.selectedPoints.moving,
+});
 const mapDispatchToProps = dispatch => bindActionCreators({
   resetPoints,
   updatePoints,
+  stoppedMovingPoint,
 }, dispatch);
 export default connect(mapStateToProps, mapDispatchToProps)(shapesGrid);
