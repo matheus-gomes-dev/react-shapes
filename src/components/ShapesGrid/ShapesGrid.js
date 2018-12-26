@@ -111,6 +111,16 @@ class shapesGrid extends Component {
       const coordinateY = point.coordinateY + event.movementY;
       return { coordinateX, coordinateY };
     });
+    let willSetNewPoints = true;
+    copyOfPoints.forEach((point) => {
+      if (!checkBoundaries(point)) {
+        willSetNewPoints = false;
+      }
+    });
+    if (!willSetNewPoints) {
+      this.stopMoving();
+      return;
+    }
     setNewPoints(copyOfPoints);
     const newCenterOfMass = {
       coordinateX: centerOfMass.coordinateX + event.movementX,
