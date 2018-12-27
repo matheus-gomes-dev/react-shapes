@@ -17,7 +17,7 @@ import {
 class Header extends Component {
   constructor() {
     super();
-    this.state = { modalOpen: true };
+    this.state = { modalOpen: false };
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
   }
