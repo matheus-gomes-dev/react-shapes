@@ -108,7 +108,7 @@ class shapesGrid extends Component {
     resultsFor4thPoint = resultsFor4thPoint.filter(point => checkBoundaries(point));
     if (!resultsFor4thPoint.length) {
       this.toastr.warning(
-        'It is impossible to form any parallelogram within the box boundaries, with these points!',
+        'It is impossible to form any parallelogram within the box boundaries with the selected points!',
         'Bad combination of points',
         { closeButton: true }
       );
@@ -268,7 +268,7 @@ class shapesGrid extends Component {
           <br />
           <button
             type="button"
-            className="btn btn-info"
+            className="btn btn-danger"
             disabled={!points.length}
             onClick={() => this.clearPoints()}
           >

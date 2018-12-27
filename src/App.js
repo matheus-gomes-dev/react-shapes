@@ -1,13 +1,4 @@
 import React from 'react';
-import {
-  Rectangle,
-  Circle,
-  Ellipse,
-  Line,
-  Polyline,
-  CornerBox,
-  Triangle
-} from 'react-shapes';
 
 import Header from './components/Header/Header';
 import ShapesGrid from './components/ShapesGrid/ShapesGrid';
