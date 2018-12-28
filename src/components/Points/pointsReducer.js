@@ -1,4 +1,4 @@
-const INITIAL_STATE = { points: [], moving: {} };
+const INITIAL_STATE = { points: [], moving: false };
 
 export default function (state = INITIAL_STATE, action) {
   switch (action.type) {
@@ -7,9 +7,9 @@ export default function (state = INITIAL_STATE, action) {
     case 'POINTS_UPDATE':
       return { ...state, points: action.payload };
     case 'POINTS_STARTED_MOVING':
-      return { ...state, moving: action.payload };
+      return { ...state, moving: true };
     case 'POINTS_STOPPED_MOVING':
-      return { ...state, moving: {} };
+      return { ...state, moving: false };
     default:
       return state;
   }

@@ -19,7 +19,7 @@ class Points extends Component {
       isMoving,
       startedMovingPoint: pointWillMove,
     } = this.props;
-    if (points.length !== 4 || isMoving.initialCoordinates) {
+    if (points.length !== 4 || isMoving) {
       return;
     }
     pointWillMove({ index, initialCoordinates: points[index] });
@@ -30,7 +30,7 @@ class Points extends Component {
     if (points.length !== 4) {
       return '';
     }
-    if (isMoving.initialCoordinates) {
+    if (isMoving) {
       return 'grabbing';
     }
     return 'grab';
@@ -58,12 +58,12 @@ class Points extends Component {
 Points.propTypes = {
   points: PropTypes.arrayOf(PropTypes.object).isRequired,
   startedMovingPoint: PropTypes.func.isRequired,
-  isMoving: PropTypes.object,
+  isMoving: PropTypes.bool,
 };
 
 
 Points.defaultProps = {
-  isMoving: {},
+  isMoving: false,
 };
 
 const mapStateToProps = state => ({

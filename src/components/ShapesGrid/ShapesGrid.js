@@ -49,7 +49,7 @@ class shapesGrid extends Component {
   gridClick(event) {
     const { points, updatePoints: setNewPoints, isMoving } = this.props;
     const copyOfPoints = [...points];
-    if (isMoving.initialCoordinates) {
+    if (isMoving) {
       this.stopMoving();
       return;
     }
@@ -168,7 +168,7 @@ class shapesGrid extends Component {
   movingMouseOverGrid(event) {
     const { isMoving, points, updatePoints: setNewPoints } = this.props;
     const { centerOfMass } = this.state;
-    if (!isMoving.initialCoordinates) {
+    if (!isMoving) {
       return;
     }
     let copyOfPoints = [...points];
@@ -294,12 +294,12 @@ shapesGrid.propTypes = {
   updatePoints: PropTypes.func.isRequired,
   resetPoints: PropTypes.func.isRequired,
   stoppedMovingPoint: PropTypes.func.isRequired,
-  isMoving: PropTypes.object,
+  isMoving: PropTypes.bool,
 };
 
 shapesGrid.defaultProps = {
   points: [],
-  isMoving: {},
+  isMoving: false,
 };
 
 const mapStateToProps = state => ({
