@@ -112,6 +112,15 @@ class shapesGrid extends Component {
         'Bad combination of points',
         { closeButton: true }
       );
+      return [];
+    }
+    if (!resultsFor4thPoint[0].coordinateX || !resultsFor4thPoint[0].coordinateY) {
+      this.toastr.warning(
+        'It is impossible to form any parallelogram with points positioned in the same line!',
+        'Points in the same line',
+        { closeButton: true }
+      );
+      return [];
     }
     return resultsFor4thPoint;
   }
