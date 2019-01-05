@@ -15,6 +15,7 @@ import { GridContainer, FlexDiv, ActionsDiv } from './ShapesGridStyles';
 import Points, { offsetX, offsetY } from '../Points/Points';
 import { resetPoints, updatePoints, stoppedMovingPoint } from '../Points/pointsActions';
 import Display from '../Display/Display';
+import ShapesControls from '../ShapesControls/ShapesControls';
 
 const limitX = 785;
 const limitY = 485;
@@ -27,7 +28,7 @@ const checkBoundaries = (point) => {
   return anwser;
 };
 
-class shapesGrid extends Component {
+class ShapesGrid extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -236,6 +237,7 @@ class shapesGrid extends Component {
           className="toast-top-right"
         />
         <Display points={points} area={area} />
+        <ShapesControls />
         <FlexDiv>
           <GridContainer
             ref={(elem) => { this.shapesGrid = elem; }}
@@ -289,7 +291,7 @@ class shapesGrid extends Component {
   }
 }
 
-shapesGrid.propTypes = {
+ShapesGrid.propTypes = {
   points: PropTypes.arrayOf(PropTypes.object),
   updatePoints: PropTypes.func.isRequired,
   resetPoints: PropTypes.func.isRequired,
@@ -297,7 +299,7 @@ shapesGrid.propTypes = {
   isMoving: PropTypes.bool,
 };
 
-shapesGrid.defaultProps = {
+ShapesGrid.defaultProps = {
   points: [],
   isMoving: false,
 };
@@ -311,4 +313,4 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   updatePoints,
   stoppedMovingPoint,
 }, dispatch);
-export default connect(mapStateToProps, mapDispatchToProps)(shapesGrid);
+export default connect(mapStateToProps, mapDispatchToProps)(ShapesGrid);
