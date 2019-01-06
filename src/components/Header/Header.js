@@ -162,7 +162,8 @@ class Header extends Component {
                     quadrilateral, why is it so small? Well, when the polygon is not simple, the
                     formula used to calculate the area of the quadrilateral will have a particular
                     behavior: it will subtract fractions of the polygon's area!
-                    Interesting, isn't it? You can take a look at the
+                    Interesting, isn't it? In our example, the resulting area will be close to zero,
+                    that's why the circle is very small. You can take a look at the
                     <a
                       href="https://en.wikipedia.org/wiki/Shoelace_formula"
                       target="_blank"

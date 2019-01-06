@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import StyledDisplay from './DisplayStyle';
 
 const Display = (props) => {
-  const { points, area } = props;
+  const { points, area, changedMode } = props;
   return (
     <StyledDisplay>
       {!points.length ? 'NO DATA TO SHOW!' : ''}
@@ -12,7 +12,7 @@ const Display = (props) => {
           {`POSITION OF POINT P${index + 1}: (${point.coordinateX},${point.coordinateY})`}
         </div>
       ))}
-      {area ? `AREA FOR CIRCLE AND PARALLELOGRAM: ${area}px²` : ''}
+      {area ? `AREA FOR CIRCLE AND ${changedMode ? 'QUADRILATERAL' : 'PARALLELOGRAM'}: ${area}px²` : ''}
     </StyledDisplay>
   );
 };
@@ -20,11 +20,13 @@ const Display = (props) => {
 Display.propTypes = {
   points: PropTypes.arrayOf(PropTypes.object),
   area: PropTypes.number,
+  changedMode: PropTypes.bool
 };
 
 Display.defaultProps = {
   points: [],
   area: null,
+  changedMode: false
 };
 
 export default Display;

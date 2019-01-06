@@ -309,7 +309,7 @@ class ShapesGrid extends Component {
           ref={(elem) => { this.toastr = elem; }}
           className="toast-top-right"
         />
-        <Display points={points} area={area} />
+        <Display points={points} area={area} changedMode={changedMode} />
         <ShapesControls />
         <FlexDiv>
           <GridContainer
