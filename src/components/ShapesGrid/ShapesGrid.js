@@ -207,6 +207,7 @@ class ShapesGrid extends Component {
 
   changingShape(event) {
     const { points, updatePoints: setNewPoints, isMoving } = this.props;
+    const { parallelogramPoints } = this.state;
     const copyOfPoints = [...points];
     copyOfPoints[isMoving.targetPointIndex] = {
       coordinateX: copyOfPoints[isMoving.targetPointIndex].coordinateX + event.movementX,
@@ -229,12 +230,7 @@ class ShapesGrid extends Component {
       copyOfPoints[2],
       copyOfPoints[3]
     );
-    const area = calculateAreaOfQuadrilateral(
-      copyOfPoints[0],
-      copyOfPoints[1],
-      copyOfPoints[2],
-      copyOfPoints[3]
-    );
+    const area = calculateAreaOfQuadrilateral(parallelogramPoints, copyOfPoints);
     this.setState(prevState => ({
       ...prevState,
       centerOfMass,
