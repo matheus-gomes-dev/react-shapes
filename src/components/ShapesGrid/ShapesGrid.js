@@ -18,6 +18,7 @@ import Points, { offsetX, offsetY } from '../Points/Points';
 import { resetPoints, updatePoints, stoppedMovingPoint } from '../Points/pointsActions';
 import Display from '../Display/Display';
 import ShapesControls from '../ShapesControls/ShapesControls';
+import { resetMode } from '../ShapesControls/shapesControlsActions';
 
 const limitX = 785;
 const limitY = 485;
@@ -219,6 +220,21 @@ class ShapesGrid extends Component {
         willSetNewPoints = false;
       }
     });
+    copyOfPoints.forEach((point, index) => {
+      if (index === 0) {
+        return;
+      }
+      if (copyOfPoints.find((p, i) => p.coordinateX === point.coordinateX
+      && p.coordinateY === point.coordinateY
+      && i !== index)) {
+        this.toastr.warning(
+          'You should not place a point on the same coordinate of another point!',
+          'Bad point position',
+          { closeButton: true }
+        );
+        willSetNewPoints = false;
+      }
+    });
     if (!willSetNewPoints) {
       this.stopMoving();
       return;
@@ -235,6 +251,7 @@ class ShapesGrid extends Component {
       ...prevState,
       centerOfMass,
       area,
+      resultsFor4thPoint: [],
     }));
   }
 
@@ -267,8 +284,9 @@ class ShapesGrid extends Component {
   }
 
   clearPoints() {
-    const { resetPoints: clearPoints } = this.props;
+    const { resetPoints: clearPoints, resetMode: clearMode } = this.props;
     clearPoints();
+    clearMode();
     this.setState(() => ({
       centerOfMass: null,
       area: null,
@@ -283,7 +301,7 @@ class ShapesGrid extends Component {
       resultsFor4thPoint,
       parallelogramPoints
     } = this.state;
-    const { points } = this.props;
+    const { points, changedMode } = this.props;
     const circleRadius = area ? Math.sqrt(area / Math.PI) : 0;
     return (
       <div>
@@ -329,7 +347,7 @@ class ShapesGrid extends Component {
           <button
             type="button"
             className="btn btn-warning"
-            disabled={resultsFor4thPoint.length <= 1}
+            disabled={resultsFor4thPoint.length <= 1 || changedMode}
             onClick={() => this.shuffleParallelogram()}
           >
             SHUFFLE
@@ -356,22 +374,27 @@ ShapesGrid.propTypes = {
   stoppedMovingPoint: PropTypes.func.isRequired,
   isMoving: PropTypes.object,
   mode: PropTypes.string,
+  resetMode: PropTypes.func.isRequired,
+  changedMode: PropTypes.bool,
 };
 
 ShapesGrid.defaultProps = {
   points: [],
   isMoving: { status: false, targetPointIndex: null },
   mode: 'move',
+  changedMode: false,
 };
 
 const mapStateToProps = state => ({
   points: state.selectedPoints.points,
   isMoving: state.selectedPoints.moving,
   mode: state.shapesControlMode.mode,
+  changedMode: state.shapesControlMode.changedMode,
 });
 const mapDispatchToProps = dispatch => bindActionCreators({
   resetPoints,
   updatePoints,
   stoppedMovingPoint,
+  resetMode
 }, dispatch);
 export default connect(mapStateToProps, mapDispatchToProps)(ShapesGrid);

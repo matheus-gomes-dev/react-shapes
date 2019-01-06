@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 
 import ControlsDiv from './ShapesControlsStyle';
-import changeMode from './shapesControlsActions';
+import { changeMode } from './shapesControlsActions';
 
 const ShapesControls = (props) => {
   const { points, mode, switchMode } = props;

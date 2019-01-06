@@ -29,6 +29,9 @@ export const defineParallelLinesAngularCoefficients = (P1, P2, P3, P4) => {
 };
 
 export const isParallelogram = (P1, P2, P3, P4) => {
+  if (!P1 || !P2 || !P3 || !P4) {
+    return false;
+  }
   const parallelLinesAngularCoefficients = defineParallelLinesAngularCoefficients(P1, P2, P3, P4);
   if (parallelLinesAngularCoefficients.length !== 2) {
     return false;
