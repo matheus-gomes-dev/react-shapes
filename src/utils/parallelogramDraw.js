@@ -28,6 +28,14 @@ export const defineParallelLinesAngularCoefficients = (P1, P2, P3, P4) => {
   return parallelLinesAngularCoefficients;
 };
 
+export const isParallelogram = (P1, P2, P3, P4) => {
+  const parallelLinesAngularCoefficients = defineParallelLinesAngularCoefficients(P1, P2, P3, P4);
+  if (parallelLinesAngularCoefficients.length !== 2) {
+    return false;
+  }
+  return true;
+};
+
 export const definePolylineExpression = (P1, P2, P3, P4) => {
   const m12 = defineAngularCoefficient(P1, P2);
   const m13 = defineAngularCoefficient(P1, P3);

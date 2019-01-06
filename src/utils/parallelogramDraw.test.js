@@ -1,6 +1,7 @@
 import {
   define4thPoints,
   defineAngularCoefficient,
+  isParallelogram,
   definePolylineExpression,
   definePolylineQuadrilateralExpression,
   defineParallelLinesAngularCoefficients,
@@ -32,6 +33,9 @@ describe('Parallelogram Draw Tests', () => {
     });
     test('Function defineAngularCoefficient must exist', () => {
       expect(defineAngularCoefficient).toBeDefined();
+    });
+    test('Function isParallelogram must exist', () => {
+      expect(isParallelogram).toBeDefined();
     });
     test('Function definePolylineExpression must exist', () => {
       expect(definePolylineExpression).toBeDefined();
@@ -340,19 +344,66 @@ describe('Parallelogram Draw Tests', () => {
       Calculating quadrilateral's area:
     `, () => {
       test(`
-        When:
-          -P1 is positioned at (0,10)
-          -P2 is positioned at (0,0)
-          -P3 is positioned at (10,10)
-          -P4 is positioned at (15,0)
-        the area should be 100`, () => {
+      When P1, P2, P3, P5 are not vertices of a parallelogram, but P5 is a point originated from a parallelogram point (P4), and:
+        -P1 is positioned at (0,10)
+        -P2 is positioned at (0,0)
+        -P3 is positioned at (10,0)
+        -P4 is positioned at (10,10)
+        -P5 is positioned at (15,10)
+      calculateAreaOfQuadrilateral([P1, P2, P3, P4], [P1, P2, P3, P5]]) should return 125`, () => {
         const area = calculateAreaOfQuadrilateral(
-          P1,
-          P2,
-          { coordinateX: 10, coordinateY: 10 },
-          { coordinateX: 15, coordinateY: 0 },
+          [
+            P1,
+            P2,
+            P3,
+            { coordinateX: 10, coordinateY: 10 }
+          ],
+          [
+            P1,
+            P2,
+            P3,
+            { coordinateX: 15, coordinateY: 10 }
+          ]
         );
         expect(area).toBe(125);
+      });
+    });
+    describe(`
+      Checking if 4 points form a parallelogram:
+    `, () => {
+      test(`
+      When P1, P2, P3, P4 are vertices of a parallelogram, and:
+        -P1 is positioned at (0,10)
+        -P2 is positioned at (0,0)
+        -P3 is positioned at (10,0)
+        -P4 is positioned at (10,10)
+      isParallelogram should return true`, () => {
+        const answer = isParallelogram(
+          P1,
+          P2,
+          P3,
+          { coordinateX: 10, coordinateY: 10 },
+        );
+        expect(answer).toBeTruthy();
+      });
+    });
+    describe(`
+      Checking if 4 points form a parallelogram:
+    `, () => {
+      test(`
+      When P1, P2, P3, P4 are vertices of a parallelogram, and:
+        -P1 is positioned at (0,10)
+        -P2 is positioned at (0,0)
+        -P3 is positioned at (10,0)
+        -P4 is positioned at (10,15)
+      isParallelogram should return true`, () => {
+        const answer = isParallelogram(
+          P1,
+          P2,
+          P3,
+          { coordinateX: 10, coordinateY: 15 },
+        );
+        expect(answer).toBeFalsy();
       });
     });
     describe(`
