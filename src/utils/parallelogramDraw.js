@@ -63,6 +63,42 @@ export const definePolylineExpression = (P1, P2, P3, P4) => {
   `;
 };
 
+export const definePolylineQuadrilateralExpression = (parallelogramPoints, points) => {
+  const m12 = defineAngularCoefficient(parallelogramPoints[0], parallelogramPoints[1]);
+  const m13 = defineAngularCoefficient(parallelogramPoints[0], parallelogramPoints[2]);
+  const parallelLinesAngularCoefficients = defineParallelLinesAngularCoefficients(
+    parallelogramPoints[0],
+    parallelogramPoints[1],
+    parallelogramPoints[2],
+    parallelogramPoints[3]
+  );
+  if (parallelLinesAngularCoefficients.find(ac => ac === m12) === undefined) {
+    return `
+    ${points[0].coordinateX - offsetX},${points[0].coordinateY - offsetY}
+    ${points[2].coordinateX - offsetX},${points[2].coordinateY - offsetY} 
+    ${points[1].coordinateX - offsetX},${points[1].coordinateY - offsetY}
+    ${points[3].coordinateX - offsetX},${points[3].coordinateY - offsetY} 
+    ${points[0].coordinateX - offsetX},${points[0].coordinateY - offsetY}
+    `;
+  }
+  if (parallelLinesAngularCoefficients.find(ac => ac === m13) === undefined) {
+    return `
+    ${points[0].coordinateX - offsetX},${points[0].coordinateY - offsetY}
+    ${points[1].coordinateX - offsetX},${points[1].coordinateY - offsetY} 
+    ${points[2].coordinateX - offsetX},${points[2].coordinateY - offsetY}
+    ${points[3].coordinateX - offsetX},${points[3].coordinateY - offsetY} 
+    ${points[0].coordinateX - offsetX},${points[0].coordinateY - offsetY}
+    `;
+  }
+  return `
+  ${points[0].coordinateX - offsetX},${points[0].coordinateY - offsetY}
+  ${points[2].coordinateX - offsetX},${points[2].coordinateY - offsetY} 
+  ${points[3].coordinateX - offsetX},${points[3].coordinateY - offsetY}
+  ${points[1].coordinateX - offsetX},${points[1].coordinateY - offsetY} 
+  ${points[0].coordinateX - offsetX},${points[0].coordinateY - offsetY}
+  `;
+};
+
 export const define4thPoints = (P1, P2, P3) => {
   // defining angular coefficient
   const m1 = defineAngularCoefficient(P3, P1);
@@ -132,11 +168,30 @@ export const calculateAreaOfParallelogram = (P1, P2, P3, P4) => {
   return Math.round((distanceP1P4 * distanceP2P3) / 2);
 };
 
+// reference: https://en.wikipedia.org/wiki/Shoelace_formula
+export const calculateAreaOfQuadrilateral = (P1, P2, P3, P4) => {
+  const pointsCombination = [
+    [P1, P2, P3, P4],
+    [P1, P2, P4, P3],
+    [P1, P3, P2, P4],
+    [P1, P3, P4, P2],
+    [P1, P4, P3, P2],
+    [P1, P4, P2, P3],
+  ];
+  const areas = pointsCombination.map(points => 0.5 * Math.abs(
+    (points[0].coordinateX * points[1].coordinateY)
+    + (points[1].coordinateX * points[2].coordinateY)
+    + (points[2].coordinateX * points[3].coordinateY)
+    + (points[3].coordinateX * points[0].coordinateY)
+    - (points[1].coordinateX * points[0].coordinateY)
+    - (points[2].coordinateX * points[1].coordinateY)
+    - (points[3].coordinateX * points[2].coordinateY)
+    - (points[0].coordinateX * points[3].coordinateY)
+  ));
+  return Math.round(Math.max(...areas));
+};
+
 export const defineCenterOfMass = (P1, P2, P3, P4) => {
-  const parallelLinesAngularCoefficients = defineParallelLinesAngularCoefficients(P1, P2, P3, P4);
-  if (parallelLinesAngularCoefficients.length !== 2) {
-    return null;
-  }
   const coordinateX = (P1.coordinateX + P2.coordinateX + P3.coordinateX + P4.coordinateX) / 4;
   const coordinateY = (P1.coordinateY + P2.coordinateY + P3.coordinateY + P4.coordinateY) / 4;
   return { coordinateX, coordinateY };

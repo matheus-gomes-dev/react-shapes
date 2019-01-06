@@ -2,9 +2,11 @@ import {
   define4thPoints,
   defineAngularCoefficient,
   definePolylineExpression,
+  definePolylineQuadrilateralExpression,
   defineParallelLinesAngularCoefficients,
   calculateDistance,
   calculateAreaOfParallelogram,
+  calculateAreaOfQuadrilateral,
   defineCenterOfMass,
   checkIfPointsAreTooClose,
 } from './parallelogramDraw';
@@ -34,6 +36,9 @@ describe('Parallelogram Draw Tests', () => {
     test('Function definePolylineExpression must exist', () => {
       expect(definePolylineExpression).toBeDefined();
     });
+    test('Function definePolylineQuadrilateralExpression must exist', () => {
+      expect(definePolylineQuadrilateralExpression).toBeDefined();
+    });
     test('Function defineParallelLinesAngularCoefficients must exist', () => {
       expect(defineParallelLinesAngularCoefficients).toBeDefined();
     });
@@ -42,6 +47,9 @@ describe('Parallelogram Draw Tests', () => {
     });
     test('Function calculateAreaOfParallelogram must exist', () => {
       expect(calculateAreaOfParallelogram).toBeDefined();
+    });
+    test('Function calculateAreaOfQuadrilateral must exist', () => {
+      expect(calculateAreaOfQuadrilateral).toBeDefined();
     });
     test('Function defineCenterOfMass must exist', () => {
       expect(defineCenterOfMass).toBeDefined();
@@ -224,6 +232,57 @@ describe('Parallelogram Draw Tests', () => {
       });
     });
     describe(`
+      Defining quadrilateral's Polyline expression:
+    `, () => {
+      test(`
+        When P1, P2, P3, P4 are vertices of a parallelogram and:
+          -P1 is positioned at (0,10)
+          -P2 is positioned at (0,0)
+          -P3 is positioned at (10,0)
+          -P4 is positioned at (10,10)
+          definePolylineQuadrilateralExpression([P1, P2, P3, P4], [P1, P2, P3, P4]) should return a expression to form a quadrilateral`, () => {
+        const expression = definePolylineQuadrilateralExpression(
+          [
+            P1,
+            P2,
+            P3,
+            { coordinateX: 10, coordinateY: 10 }
+          ],
+          [
+            P1,
+            P2,
+            P3,
+            { coordinateX: 10, coordinateY: 10 }
+          ]
+        );
+        expect(expression).toBeTruthy();
+      });
+      test(`
+        When P1, P2, P3, P5 are not vertices of a parallelogram, but P5 is a point originated from a parallelogram point (P4), and:
+          -P1 is positioned at (0,10)
+          -P2 is positioned at (0,0)
+          -P3 is positioned at (10,0)
+          -P4 is positioned at (10,10)
+          -P5 is positioned at (15,10)
+          definePolylineQuadrilateralExpression([P1, P2, P3, P4], [P1, P2, P3, P5]]) should return a expression to form a quadrilateral`, () => {
+        const expression = definePolylineQuadrilateralExpression(
+          [
+            P1,
+            P2,
+            P3,
+            { coordinateX: 10, coordinateY: 10 }
+          ],
+          [
+            P1,
+            P2,
+            P3,
+            { coordinateX: 15, coordinateY: 10 }
+          ]
+        );
+        expect(expression).toBeTruthy();
+      });
+    });
+    describe(`
       Defining distance between two points:
     `, () => {
       test(`
@@ -278,7 +337,26 @@ describe('Parallelogram Draw Tests', () => {
       });
     });
     describe(`
-      Defining parallelogram's center of mass:
+      Calculating quadrilateral's area:
+    `, () => {
+      test(`
+        When:
+          -P1 is positioned at (0,10)
+          -P2 is positioned at (0,0)
+          -P3 is positioned at (10,10)
+          -P4 is positioned at (15,0)
+        the area should be 100`, () => {
+        const area = calculateAreaOfQuadrilateral(
+          P1,
+          P2,
+          { coordinateX: 10, coordinateY: 10 },
+          { coordinateX: 15, coordinateY: 0 },
+        );
+        expect(area).toBe(125);
+      });
+    });
+    describe(`
+      Defining quadrilateral's center of mass:
     `, () => {
       test(`
         When:
@@ -296,21 +374,6 @@ describe('Parallelogram Draw Tests', () => {
         const { coordinateX, coordinateY } = centerOfMass;
         expect(coordinateX).toBe(4);
         expect(coordinateY).toBe(4);
-      });
-      test(`
-        When:
-          -P1 is positioned at (0,4)
-          -P2 is positioned at (4,8)
-          -P3 is positioned at (8,4)
-          -P4 is positioned at (4,7)
-        the points do not form a parallelogram, and the center of mass should be null`, () => {
-        const centerOfMass = defineCenterOfMass(
-          { coordinateX: 0, coordinateY: 4 },
-          { coordinateX: 4, coordinateY: 8 },
-          { coordinateX: 8, coordinateY: 4 },
-          { coordinateX: 4, coordinateY: 7 }
-        );
-        expect(centerOfMass).toBeNull();
       });
     });
     describe(`

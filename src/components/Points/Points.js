@@ -19,10 +19,10 @@ class Points extends Component {
       isMoving,
       startedMovingPoint: pointWillMove,
     } = this.props;
-    if (points.length !== 4 || isMoving) {
+    if (points.length !== 4 || isMoving.status) {
       return;
     }
-    pointWillMove({ index, initialCoordinates: points[index] });
+    pointWillMove({ status: true, targetPointIndex: index });
   }
 
   defineCursorType() {
@@ -30,7 +30,7 @@ class Points extends Component {
     if (points.length !== 4) {
       return '';
     }
-    if (isMoving) {
+    if (isMoving.status) {
       return 'grabbing';
     }
     return 'grab';
@@ -58,12 +58,12 @@ class Points extends Component {
 Points.propTypes = {
   points: PropTypes.arrayOf(PropTypes.object).isRequired,
   startedMovingPoint: PropTypes.func.isRequired,
-  isMoving: PropTypes.bool,
+  isMoving: PropTypes.object,
 };
 
 
 Points.defaultProps = {
-  isMoving: false,
+  isMoving: { status: false, targetPointIndex: null },
 };
 
 const mapStateToProps = state => ({

@@ -7,8 +7,10 @@ import PropTypes from 'prop-types';
 import {
   define4thPoints,
   definePolylineExpression,
+  definePolylineQuadrilateralExpression,
   defineCenterOfMass,
   calculateAreaOfParallelogram,
+  calculateAreaOfQuadrilateral,
   checkIfPointsAreTooClose,
 } from '../../utils/parallelogramDraw';
 import { GridContainer, FlexDiv, ActionsDiv } from './ShapesGridStyles';
@@ -35,6 +37,7 @@ class ShapesGrid extends Component {
       centerOfMass: null,
       area: null,
       resultsFor4thPoint: [],
+      parallelogramPoints: [],
     };
     this.shapesGrid = React.createRef();
     this.toastr = React.createRef();
@@ -45,12 +48,14 @@ class ShapesGrid extends Component {
     this.stopMoving = this.stopMoving.bind(this);
     this.shuffleParallelogram = this.shuffleParallelogram.bind(this);
     this.check4thPoints = this.check4thPoints.bind(this);
+    this.movingShape = this.movingShape.bind(this);
+    this.changingShape = this.changingShape.bind(this);
   }
 
   gridClick(event) {
     const { points, updatePoints: setNewPoints, isMoving } = this.props;
     const copyOfPoints = [...points];
-    if (isMoving) {
+    if (isMoving.status) {
       this.stopMoving();
       return;
     }
@@ -101,6 +106,7 @@ class ShapesGrid extends Component {
       area,
       resultsFor4thPoint,
       centerOfMass,
+      parallelogramPoints: copyOfPoints,
     }));
   }
 
@@ -163,15 +169,13 @@ class ShapesGrid extends Component {
       ...prevState,
       centerOfMass,
       area,
+      parallelogramPoints: copyOfPoints,
     }));
   }
 
-  movingMouseOverGrid(event) {
-    const { isMoving, points, updatePoints: setNewPoints } = this.props;
+  movingShape(event) {
+    const { points, updatePoints: setNewPoints } = this.props;
     const { centerOfMass } = this.state;
-    if (!isMoving) {
-      return;
-    }
     let copyOfPoints = [...points];
     copyOfPoints = copyOfPoints.map((point) => {
       const coordinateX = point.coordinateX + event.movementX;
@@ -197,8 +201,58 @@ class ShapesGrid extends Component {
     this.setState(prevState => ({
       ...prevState,
       centerOfMass: newCenterOfMass,
-      resultsFor4thPoint
+      resultsFor4thPoint,
     }));
+  }
+
+  changingShape(event) {
+    const { points, updatePoints: setNewPoints, isMoving } = this.props;
+    const copyOfPoints = [...points];
+    copyOfPoints[isMoving.targetPointIndex] = {
+      coordinateX: copyOfPoints[isMoving.targetPointIndex].coordinateX + event.movementX,
+      coordinateY: copyOfPoints[isMoving.targetPointIndex].coordinateY + event.movementY,
+    };
+    let willSetNewPoints = true;
+    copyOfPoints.forEach((point) => {
+      if (!checkBoundaries(point)) {
+        willSetNewPoints = false;
+      }
+    });
+    if (!willSetNewPoints) {
+      this.stopMoving();
+      return;
+    }
+    setNewPoints(copyOfPoints);
+    const centerOfMass = defineCenterOfMass(
+      copyOfPoints[0],
+      copyOfPoints[1],
+      copyOfPoints[2],
+      copyOfPoints[3]
+    );
+    const area = calculateAreaOfQuadrilateral(
+      copyOfPoints[0],
+      copyOfPoints[1],
+      copyOfPoints[2],
+      copyOfPoints[3]
+    );
+    this.setState(prevState => ({
+      ...prevState,
+      centerOfMass,
+      area,
+    }));
+  }
+
+  movingMouseOverGrid(event) {
+    const { isMoving, mode } = this.props;
+    if (!isMoving.status) {
+      return;
+    }
+
+    if (mode === 'move') {
+      this.movingShape(event);
+      return;
+    }
+    this.changingShape(event);
   }
 
   stopMoving() {
@@ -227,7 +281,12 @@ class ShapesGrid extends Component {
   }
 
   render() {
-    const { area, centerOfMass, resultsFor4thPoint } = this.state;
+    const {
+      area,
+      centerOfMass,
+      resultsFor4thPoint,
+      parallelogramPoints
+    } = this.state;
     const { points } = this.props;
     const circleRadius = area ? Math.sqrt(area / Math.PI) : 0;
     return (
@@ -249,7 +308,10 @@ class ShapesGrid extends Component {
               <div>
                 <svg height={490} width={790}>
                   <polyline
-                    points={definePolylineExpression(points[0], points[1], points[2], points[3])}
+                    points={
+                      definePolylineExpression(points[0], points[1], points[2], points[3])
+                      || definePolylineQuadrilateralExpression(parallelogramPoints, points)
+                    }
                     stroke="blue"
                     strokeWidth="3"
                     fill="transparent"
@@ -296,17 +358,20 @@ ShapesGrid.propTypes = {
   updatePoints: PropTypes.func.isRequired,
   resetPoints: PropTypes.func.isRequired,
   stoppedMovingPoint: PropTypes.func.isRequired,
-  isMoving: PropTypes.bool,
+  isMoving: PropTypes.object,
+  mode: PropTypes.string,
 };
 
 ShapesGrid.defaultProps = {
   points: [],
-  isMoving: false,
+  isMoving: { status: false, targetPointIndex: null },
+  mode: 'move',
 };
 
 const mapStateToProps = state => ({
   points: state.selectedPoints.points,
   isMoving: state.selectedPoints.moving,
+  mode: state.shapesControlMode.mode,
 });
 const mapDispatchToProps = dispatch => bindActionCreators({
   resetPoints,
