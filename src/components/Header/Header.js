@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import Modal from '@material-ui/core/Modal';
 import logo from '../../static/images.png';
+import example from '../../static/example.png';
 
 import {
   HeaderDiv,
   AboutButton,
   modalDivStyle,
   pictureContainerStyle,
+  pictureExample,
   headerContentStyle,
   scrollableDiv,
   aboutContent,
@@ -45,12 +47,6 @@ class Header extends Component {
             onClose={this.closeModal}
           >
             <div style={modalDivStyle}>
-              {/*
-                referencia: https://i.stack.imgur.com/l90A0.png
-                incluir logo do react abaixo do titulo
-                -incluir textarea
-                -incluir div para o botão
-              */}
               <div style={headerContentStyle}>
                 <h1>About React Shapes</h1>
               </div>
@@ -120,9 +116,62 @@ class Header extends Component {
                 <div style={aboutContent}>
                   <span>
                     A yellow circle will also be formed, having the same area and center of mass
-                    of the parallelogram. You can reset all the points anytime you want, clicking
-                    on the red button below the green box. If you want to move your shapes, click
-                    on any of the points, and click again once you are finished. Have fun!
+                    of the quadrilateral.
+                  </span>
+                </div>
+                <h2>Changing shapes</h2>
+                <div style={aboutContent}>
+                  <span>
+                    React Shapes also allows you to move or change the shape of the formed
+                    parallelogram. You will see two buttons above the green box for each of
+                    these features.
+                    After selecting one of them, click (not drag) on any point, to see the
+                    shapes updating, and click again when you are finished.
+                  </span>
+                </div>
+                <div style={aboutContent}>
+                  <span>
+                    It is important to notice that once you want to change the shape
+                    of the quadrilateral by updating the position of a single point, there is
+                    no guarantee that it will still be a parallelogram, having the properties
+                    we know from Geometry. So, it will not be possible anymore to shuffle
+                    parallelograms. However, area and yellow circle information will be updated
+                    accordingly for the new quadrilateral formed. You can reset all the points
+                    anytime you want, clicking on the red button below the green box.
+                  </span>
+                </div>
+                <h2>Not Simple Polygons</h2>
+                <div style={aboutContent}>
+                  <span>
+                    Polygons that are self-intersecting, are classified as not simple
+                    polygons. When you choose to update the shapes by moving a single
+                    point, you may generate a not simple polygon.
+                    Check out this example:
+                  </span>
+                </div>
+                <div style={pictureExample}>
+                  <figure>
+                    <img alt="example" src={example} width="255" height="255" />
+                    <figcaption>Figure 1 - Not simple polygon</figcaption>
+                  </figure>
+                </div>
+                <div style={aboutContent}>
+                  <span>
+                    If you look carefully, you will see a very small yellow circle in the center
+                    of the picture. But wait, if the yellow circle has the same area of the
+                    quadrilateral, why is it so small? Well, when the polygon is not simple, the
+                    formula used to calculate the area of the quadrilateral will have a particular
+                    behavior: it will subtract fractions of the polygon's area!
+                    Interesting, isn't it? You can take a look at the
+                    <a
+                      href="https://en.wikipedia.org/wiki/Shoelace_formula"
+                      target="_blank"
+                      style={anchorStyle}
+                    >
+                      Gauss's area formula
+                    </a>
+                    (also called Shoelace formula) if you want to understand in more details why
+                    this happens. Have fun! :)
                   </span>
                 </div>
               </div>

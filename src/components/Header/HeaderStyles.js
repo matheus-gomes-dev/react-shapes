@@ -36,6 +36,13 @@ export const headerContentStyle = {
 
 export const pictureContainerStyle = {
   marginTop: '50px',
+  textAlign: 'center',
+};
+
+export const pictureExample = {
+  marginTop: '30px',
+  marginBottom: '30px',
+  textAlign: 'center',
 };
 
 export const scrollableDiv = {
